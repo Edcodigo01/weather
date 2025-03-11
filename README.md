@@ -27,12 +27,16 @@ cp .env.example.docker .env
 docker-compose up -d
 ```
 
-- Instalar Laravel Horizon
+- Agregar Laravel Horizon
 ```
 docker-compose exec app composer require laravel/horizon
-docker-compose exec app php artisan horizon:install
-docker-compose exec app php artisan horizon
 ```
+- Instalar Laravel Horizon
+```
+docker-compose exec app php artisan horizon:install
+```
+- Iniciar Laravel Horizon
+docker-compose exec app php artisan horizon
 
 - Aplicar migración y seeders
 ```
