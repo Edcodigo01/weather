@@ -1,6 +1,8 @@
 
 # Aplicación Clima en Laravel 11 y Vue 3
 
+Aplicación que muestra una lista de usuarios junto con el clima actual basado en su ubicación geográfica.
+
 ## REQUERIMIENTOS
 
 - Docker y Docker Compose
