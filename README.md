@@ -60,7 +60,7 @@ Este método permite usar Laravel Horizon y actualizaciones automáticas.
 
 **Nota:** Este comando es necesario porque los datos del clima se extraen de forma automática a través de colas (jobs de Laravel) cada 30 minutos con Laravel Task Scheduling. Este paso debe ejecutarse inicialmente para obtener los datos preparados en lugar de esperar 30 minutos.
 
-9. En el navegador, dirigirse a: `http://localhost:8000` para usar la aplicación
+9. En el navegador, dirigirse a: http://localhost:8000 para usar la aplicación
 ### Despliegue local en Windows
 
 Requiere la dependencia de Redis en Docker o WSL. Esta opción puede mostrar la aplicación de manera más óptima, pero no ejecutará las colas de forma automática a través de Laravel Task Scheduling ni usará Laravel Horizon.
@@ -119,13 +119,13 @@ Requiere la dependencia de Redis en Docker o WSL. Esta opción puede mostrar la 
     concurrently "vite" "php artisan serve" "php artisan queue:work"
     ```
 
-9. En el navegador, dirigirse a: `http://localhost:8000`
+9. En el navegador, dirigirse a: http://localhost:8000
 
 ## Monitoreo y testing
 
-- Para monitorear Jobs (colas) de Laravel puede usar **Laravel Horizon** ingresando a `http://localhost:8000/horizon` (Solo en entorno Linux o Docker).
+- Para monitorear los jobs (colas) de Laravel, puedes usar Laravel Horizon ingresando a [http://localhost:8000/horizon](http://localhost:8000/horizon) (solo en entornos Linux o Docker).
 
-- Una pequeña prueba de testing se ejecutara con el comando  `php artisan test` o  `docker-compose exec app php artisan test` en docker.
+- Una pequeña prueba de testing se ejecutará con el comando `php artisan test` o `docker-compose exec app php artisan test` en Docker.
 ## Metodologías aplicadas
 
 Esta aplicación requiere peticiones optimizadas que obtengan datos climáticos reales. Para esto, se utilizan varios métodos:
