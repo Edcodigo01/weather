@@ -31,6 +31,7 @@ docker-compose up -d
 ```
 docker-compose exec app composer require laravel/horizon
 docker-compose exec app php artisan horizon:install
+docker-compose exec app php artisan horizon
 ```
 
 - Aplicar migración y seeders
@@ -40,7 +41,7 @@ docker-compose exec app php artisan migrate --seed
 
 - Se ejecuta este comando para traer los primeros datos del clima (solo 1 vez)
 ```
-php artisan app:check-weather-users
+docker-compose exec app php artisan app:check-weather-users
 ```
 
 **Nota:** Este comando es necesario, pues los datos del clima se extraen de forma automática a través de colas (jobs Laravel) cada 30 minutos con Laravel Task Scheduling, para mejorar el rendimiento de cada petición al servidor, evitando llamadas innecesarias a la API de WeatherApi. Se debe ejecutar la primera vez para tener los datos preparados, en vez de esperar 30 minutos.
