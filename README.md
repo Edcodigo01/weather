@@ -9,128 +9,139 @@ Aplicación que muestra una lista de usuarios junto con el clima actual basado e
 
 ## DESPLIEGUE
 
-**Nota Importante:** El rendimiento de la aplicación puede verse afectado si se ejecuta en Docker en un entorno Windows en comparación con su ejecución localmente. Debido a que Docker no funciona de manera óptima en Windows, la aplicación podría parecer más lenta. Por esta razón, a continuación se presentan dos métodos de despliegue distintos.
+**Nota Importante:** El rendimiento de la aplicación puede verse afectado si se ejecuta en Docker en un entorno Windows, en comparación con su ejecución localmente. Esto se debe a que Docker no funciona de manera óptima en Windows, lo que puede hacer que la aplicación se sienta más lenta. Por esta razón, se presentan dos métodos de despliegue distintos.
 
-### Despliegue total Docker
+### Despliegue total con Docker
 
-Permite usar Laravel Horizon y actualizaciones automáticas.
+Este método permite usar Laravel Horizon y actualizaciones automáticas.
 
-- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo .env.example.docker.
-```
-git clone https://github.com/Edcodigo01/weather.git
-cd weather
-cp .env.example.docker .env
-```
- 
-- Levantar contenedores
-```
-docker-compose up -d
-```
-- instalar dependencias
-```
-docker-compose exec app composer install
-```
-- Agregar Laravel Horizon
-```
-docker-compose exec app composer require laravel/horizon
-```
-- Instalar Laravel Horizon
-```
-docker-compose exec app php artisan horizon:install
-```
-- Se debe resetear el contendor de laravel despues de instalar Laravel Horizon
-```
-docker restart my-laravel-app
-```
-- Aplicar migración y seeders
-```
-- Se ejecuta este comando para traer los primeros datos del clima (solo 1 vez)
-```
-docker-compose exec app php artisan app:check-weather-users
-```
+1. Clonar el repositorio, ingresar al directorio descargado y crear el archivo `.env` a partir del archivo `.env.example.docker`.
+    ```bash
+    git clone https://github.com/Edcodigo01/weather.git
+    cd weather
+    cp .env.example.docker .env
+    ```
 
-**Nota:** Este comando es necesario, pues los datos del clima se extraen de forma automática a través de colas (jobs Laravel) cada 30 minutos con Laravel Task Scheduling, para mejorar el rendimiento de cada petición al servidor, evitando llamadas innecesarias a la API de WeatherApi. Se debe ejecutar la primera vez para tener los datos preparados, en vez de esperar 30 minutos.
+2. Levantar los contenedores.
+    ```bash
+    docker-compose up -d
+    ```
 
-- En el navegador dirigirse a: http://localhost:8000
+3. Instalar dependencias.
+    ```bash
+    docker-compose exec app composer install
+    ```
 
-### Despliegue local Windows
+4. Agregar Laravel Horizon.
+    ```bash
+    docker-compose exec app composer require laravel/horizon
+    ```
 
-Requiere dependencia de Redis en Docker o WSL. Esta opción puede mostrar la aplicación de una forma más óptima, sin embargo, no se ejecutarán las colas de forma automática a través de Laravel Task Scheduling y tampoco podrá usar Laravel Horizon.
+5. Instalar Laravel Horizon.
+    ```bash
+    docker-compose exec app php artisan horizon:install
+    ```
 
-- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo .env.example.docker, ya tiene las configuraciones necesarias.
-```
-git clone https://github.com/Edcodigo01/weather.git
-cd weather
-cp .env.example.local .env
-```
+6. Reiniciar el contenedor de Laravel después de instalar Horizon.
+    ```bash
+    docker restart my-laravel-app
+    ```
 
-- Instalar dependencias Laravel
-```
-composer install
-```
+7. Aplicar migraciones y seeds.
+    ```bash
+    docker-compose exec app php artisan migrate --seed
+    ```
 
-- Instalar dependencias para el frontend
-```
-npm install
-```
+8. Ejecutar este comando para traer los primeros datos del clima (solo una vez).
+    ```bash
+    docker-compose exec app php artisan app:check-weather-users
+    ```
 
-- Crear una base de datos SQL, en Docker o local como PostgreSQL o MySQL. El archivo .env tiene predefinidos los siguientes datos:
-```
-DB_CONNECTION=pgsql
-DB_HOST=localhost
-DB_PORT=5432
-DB_DATABASE=weather
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-```
+**Nota:** Este comando es necesario porque los datos del clima se extraen de forma automática a través de colas (jobs de Laravel) cada 30 minutos con Laravel Task Scheduling. Este paso debe ejecutarse inicialmente para obtener los datos preparados en lugar de esperar 30 minutos.
 
-- Instalar Redis, para instalar en Docker usar:
-```
-docker run --name redis -d -p 6379:6379 redis
-```
+9. En el navegador, dirigirse a: `http://localhost:8000`
 
-- Ejecutar migraciones y seeds
-```
-php artisan migrate --seed
-```
+### Despliegue local en Windows
 
-- Se ejecuta el comando para traer los datos del clima.
-```
-php artisan app:check-weather-users
-```
+Requiere la dependencia de Redis en Docker o WSL. Esta opción puede mostrar la aplicación de manera más óptima, pero no ejecutará las colas de forma automática a través de Laravel Task Scheduling ni usará Laravel Horizon.
 
-**Nota:** Este comando es necesario, pues los datos del clima se extraen a través de colas (jobs Laravel) que se deberían ejecutar de forma automática a través de Laravel Task Scheduling. De forma local no es posible, pero si desea probar la opción automática, aplique el despliegue total en Docker descrito en la sección anterior.
+1. Clonar el repositorio, ingresar al directorio descargado y crear el archivo `.env` a partir del archivo `.env.example.local`.
+    ```bash
+    git clone https://github.com/Edcodigo01/weather.git
+    cd weather
+    cp .env.example.local .env
+    ```
 
-- Ejecutar el siguiente comando para desplegar la aplicación
-```
-npm run laravel-vue
-```
+2. Instalar las dependencias de Laravel.
+    ```bash
+    composer install
+    ```
 
-**Nota:** El comando **npm run laravel-vue** es equivalente a: `concurrently "vite" "php artisan serve" "php artisan queue:work"`
+3. Instalar las dependencias del frontend.
+    ```bash
+    npm install
+    ```
 
-- En el navegador dirigirse a: http://localhost:8000
+4. Crear una base de datos SQL, ya sea en Docker o localmente (PostgreSQL o MySQL). El archivo `.env` ya tiene los datos predefinidos:
+    ```env
+    DB_CONNECTION=pgsql
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_DATABASE=weather
+    DB_USERNAME=postgres
+    DB_PASSWORD=postgres
+    ```
+
+5. Instalar Redis. Si usas Docker, ejecuta:
+    ```bash
+    docker run --name redis -d -p 6379:6379 redis
+    ```
+
+6. Ejecutar migraciones y seeds.
+    ```bash
+    php artisan migrate --seed
+    ```
+
+7. Ejecutar el comando para traer los datos del clima.
+    ```bash
+    php artisan app:check-weather-users
+    ```
+
+**Nota:** Este comando es necesario porque los datos del clima se extraen a través de colas (jobs de Laravel) que deberían ejecutarse automáticamente con Laravel Task Scheduling. Sin embargo, en esta opción local no es posible ejecutarlas de forma automática. Si deseas probar la opción automática, aplica el despliegue total con Docker descrito anteriormente.
+
+8. Ejecutar el siguiente comando para desplegar la aplicación.
+    ```bash
+    npm run laravel-vue
+    ```
+
+**Nota:** El comando `npm run laravel-vue` es equivalente a:
+    ```bash
+    concurrently "vite" "php artisan serve" "php artisan queue:work"
+    ```
+
+9. En el navegador, dirigirse a: `http://localhost:8000`
 
 ## Metodologías aplicadas
 
-Para esta aplicación se requieren peticiones optimizadas. Estas deberán traer datos del clima reales, debido a esto se recurrió al uso de una combinación de métodos.
+Esta aplicación requiere peticiones optimizadas que obtengan datos climáticos reales. Para esto, se utilizan varios métodos:
 
-- Laravel Task Scheduling  
-  En vez de hacer una llamada a la API externa WeatherApi, en cada solicitud de lista de usuarios o un usuario en particular, se aplica el uso de tareas programadas, que actualizarán los datos cada 30 minutos, para verificar cambios en la API externa y almacenarlos en bases de datos para cada usuario. De este modo, cada consulta desde el frontend de la aplicación al backend será mucho más eficiente, dependiendo solo de los datos locales.
+- **Laravel Task Scheduling:**  
+  En lugar de hacer una llamada a la API externa WeatherApi en cada solicitud de lista de usuarios o un usuario en particular, se usan tareas programadas que actualizan los datos cada 30 minutos. Esto verifica los cambios en la API externa y almacena los datos en la base de datos para cada usuario. De este modo, cada consulta desde el frontend será más eficiente, utilizando solo los datos locales.
 
-- Colas (Jobs) Laravel  
-  Para procesar los datos de una forma más eficiente, se utilizan jobs de Laravel. A través de scheduling se llama la ejecución de jobs para cada usuario. Estos jobs ejecutarán su función en colas y en segundo plano, permitiendo un procesamiento de estas tareas de una forma más óptima. A través de estos trabajos es que se consultará el clima para cada usuario. En caso de algún error externo, están configurados para realizar intentos.
+- **Colas (Jobs) en Laravel:**  
+  Para procesar los datos de forma más eficiente, se usan jobs de Laravel. A través de scheduling, se ejecutan jobs para cada usuario en segundo plano, permitiendo un procesamiento más óptimo. Estos jobs consultarán el clima para cada usuario. En caso de un error externo, están configurados para realizar intentos.
 
-- Base de datos en memoria Redis  
-  Para optimizar un poco más las consultas locales, se recurre al uso de cache Redis. Con esto podemos almacenar datos que suelen ser usados con mucha frecuencia sin cambios previos. En este caso, para listar los usuarios, la primera vez que se acceda a la lista, extraerá los datos desde la base de datos PostgreSQL. Para la siguiente vez que intente acceder, estos datos ya se habrán guardado en cache en la petición anterior, y en esta oportunidad, los datos, en vez de ser traídos desde la base de datos, se obtendrán directamente desde cache, lo que es mucho más rápido y elimina carga de trabajo para la base de datos. Por supuesto, los registros de la base de datos serán actualizados en cualquier momento. En este caso, con cada job, es acá donde se eliminarán los datos antiguos desde la cache, para que al hacer otra petición al listado de usuarios, estos extraigan los nuevos datos insertados en la base de datos y actualicen los de la cache.
+- **Base de datos en memoria Redis:**  
+  Para optimizar las consultas locales, se utiliza Redis para almacenar datos frecuentemente consultados sin cambios previos. Por ejemplo, para listar usuarios, la primera vez se extraen desde la base de datos PostgreSQL. En las siguientes consultas, se recuperan directamente desde el cache de Redis, lo que es mucho más rápido y reduce la carga en la base de datos. Los registros de la base de datos se actualizarán en cualquier momento, y con cada job, los datos antiguos en Redis serán eliminados para actualizar el cache con los nuevos datos.
 
 ## Consideraciones
 
-Es posible aplicar más métodos para optimizar esta aplicación.
+Existen varias maneras de optimizar aún más esta aplicación:
 
-Se podrían utilizar APIs de respaldo, es decir, si falla la API usada, hacer una consulta a una segunda, y así evitar dependencia de una única API.
+- **APIs de respaldo:** Se podrían configurar APIs secundarias para evitar la dependencia de una sola API externa en caso de fallos.
 
-En caso de tener un número de usuarios mucho mayor, se podría configurar Laravel para que actualice los datos solo de los usuarios que tienen mayor frecuencia en la aplicación, verificando la última vez que inició sesión, o si está activo en ese momento, evitando de esta forma grandes consultas a la API externa y trabajo para la base de datos.
+- **Actualización selectiva de datos:** Si hay un número elevado de usuarios, Laravel podría actualizar solo los datos de los usuarios con mayor frecuencia de interacción, verificando la última vez que iniciaron sesión o si están activos, evitando grandes consultas a la API externa y reduciendo la carga de la base de datos.
 
-En cuanto a la base de datos, en este caso se aplican relaciones, pero para grandes volúmenes de usuarios se puede aplicar la desnormalización de base de datos, que consiste en crear tablas que obtengan todos los datos requeridos para una solicitud, en este caso sería una tabla única para almacenar los datos de los usuarios, a la vez que almacena los datos del clima que ofrece la API externa.
+- **Desnormalización de base de datos:** Para grandes volúmenes de usuarios, se podría desnormalizar la base de datos, creando una tabla única que almacene tanto los datos de los usuarios como los del clima, lo que reduciría las consultas complejas.
 
-Para mejorar la interacción con los usuarios de la aplicación, se podrían aplicar websockets, para comunicar al frontend cuando los datos sean actualizados en base de datos y se haga la actualización de estos.
+- **Websockets:** Para mejorar la interacción, se podrían implementar websockets para notificar al frontend cuando los datos sean actualizados en la base de datos.
