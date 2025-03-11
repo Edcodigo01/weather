@@ -28,10 +28,7 @@ docker-compose up -d
 ```
 - instalar dependencias
 ```
-docker-compose exec app composer install
-```
-- Aplicar migración y seeders
-```
+
 docker-compose exec app php artisan migrate --seed
 ```
 - Agregar Laravel Horizon
@@ -42,7 +39,14 @@ docker-compose exec app composer require laravel/horizon
 ```
 docker-compose exec app php artisan horizon:install
 ```
-
+docker-compose exec app composer install
+```
+- SE debe resetear el contendor de laravel despues de instalar Laravel Horizon
+```
+docker restart my-laravel-app
+```
+- Aplicar migración y seeders
+```
 - Se ejecuta este comando para traer los primeros datos del clima (solo 1 vez)
 ```
 docker-compose exec app php artisan app:check-weather-users
