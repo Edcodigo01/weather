@@ -36,8 +36,9 @@ docker-compose exec app composer require laravel/horizon
 docker-compose exec app php artisan horizon:install
 ```
 - Iniciar Laravel Horizon
+```
 docker-compose exec app php artisan horizon
-
+```
 - Aplicar migración y seeders
 ```
 docker-compose exec app php artisan migrate --seed
