@@ -17,7 +17,7 @@ Permite usar Laravel Horizon y actualizaciones automáticas.
 
 - Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo env.docker.
 ```
-https://github.com/Edcodigo01/weather.git
+git clone https://github.com/Edcodigo01/weather.git
 cd weather
 cp .env.docker .env
 ```
@@ -54,7 +54,7 @@ Requiere dependencia de Redis en Docker o WSL. Esta opción puede mostrar la apl
 
 - Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo env.docker, ya tiene las configuraciones necesarias.
 ```
-https://github.com/Edcodigo01/weather.git
+git clone https://github.com/Edcodigo01/weather.git
 cd weather
 cp .env.local .env
 ```
