@@ -14,6 +14,9 @@ services:
             - APP_ENV=local
         networks:
             - app-network
+        depends_on:
+            - db
+            - redis
 
     nginx:
         image: nginx:alpine
