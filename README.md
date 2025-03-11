@@ -31,7 +31,6 @@ docker-compose up -d
 ```
 docker-compose exec app composer require laravel/horizon
 docker-compose exec app php artisan horizon:install
-docker-compose exec app php artisan horizon:status
 ```
 
 - Aplicar migración y seeders
