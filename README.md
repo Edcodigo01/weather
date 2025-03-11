@@ -6,6 +6,7 @@ Aplicación que muestra una lista de usuarios junto con el clima actual basado e
 ## REQUERIMIENTOS
 
 - Docker y Docker Compose
+- Conexión a internet
 
 ## DESPLIEGUE
 
