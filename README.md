@@ -38,7 +38,7 @@ docker-compose exec app composer require laravel/horizon
 ```
 docker-compose exec app php artisan horizon:install
 ```
-- SE debe resetear el contendor de laravel despues de instalar Laravel Horizon
+- Se debe resetear el contendor de laravel despues de instalar Laravel Horizon
 ```
 docker restart my-laravel-app
 ```
