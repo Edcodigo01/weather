@@ -26,6 +26,10 @@ cp .env.example.docker .env
 ```
 docker-compose up -d
 ```
+- instalar dependencias
+```
+docker-compose exec app composer install
+```
 - Aplicar migración y seeders
 ```
 docker-compose exec app php artisan migrate --seed
