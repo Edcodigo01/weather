@@ -33,11 +33,6 @@ class CheckWeatherUsersJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // BORRAR--------------
-        DB::table('schedule_count')->insert([
-            'type' => 'exec job',
-            'user_id' => $this->user->id,
-        ]);
 
         $latitude = $this->user->latitude;
         $longitude = $this->user->longitude;
@@ -82,22 +77,9 @@ class CheckWeatherUsersJob implements ShouldQueue
                 Cache::forget("user-list-" . $this->user->id);
 
             } catch (\Throwable $th) {
-                // BORRAR-----------------;
-                DB::table('schedule_count')->insert([
-                    'type' => 'fallo insert jog',
-                    'user_id' => $this->user->id,
-                    'created_at' => now()
-                ]);
                 $this->fail($th);
             }
         } else {
-            // BORRAR-----------------;
-            DB::table('schedule_count')->insert([
-                'type' => 'fallo job',
-                'user_id' => $this->user->id,
-                'created_at' => now()
-            ]);
-
             $this->fail();
         }
     }

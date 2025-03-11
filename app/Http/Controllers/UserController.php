@@ -44,16 +44,4 @@ class UserController extends Controller
 
     }
 
-    // ---BORRAR----------------
-    public function store() // comentar
-    {
-
-        $users = User::all("id");
-
-        foreach ($users as $user) {
-            CheckWeatherUsersJob::dispatch($user);
-        }
-
-        return "Probando jobs";
-    }
 }

@@ -27,12 +27,6 @@ class checkWeatherUsers extends Command
      */
     public function handle()
     {
-        // BORRAR------------
-        DB::table('schedule_count')->insert([
-            'type' => 'schedule',
-            'user_id' => 1,
-            'created_at' => now()
-        ]);
 
         $users = User::all("id");
 
