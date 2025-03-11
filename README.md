@@ -1,66 +1,127 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# REQUERIMIENTOS
 
-## About Laravel
+- Docker y Docker Compose
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## DESPLIEGUE
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Nota Importante:** El rendimiento de la aplicación puede verse afectado si se ejecuta en Docker en un entorno Windows en comparación con su ejecución localmente. Debido a que Docker no funciona de manera óptima en Windows, la aplicación podría parecer más lenta. Por esta razón, a continuación se presentan dos métodos de despliegue distintos.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Despliegue total Docker
 
-## Learning Laravel
+Permite usar Laravel Horizon y actualizaciones automáticas.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo env.docker.
+```
+https://github.com/Edcodigo01/weather.git
+cd weather
+cp .env.docker .env
+```
+ 
+- Levantar contenedores
+```
+docker-compose up -d
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- Instalar Laravel Horizon
+```
+docker-compose exec app composer require laravel/horizon
+docker-compose exec app php artisan horizon:install
+docker-compose exec app php artisan horizon:status
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Aplicar migración y seeders
+```
+docker-compose exec app php artisan migrate --seed
+```
 
-## Laravel Sponsors
+- Se ejecuta este comando para traer los primeros datos del clima (solo 1 vez)
+```
+php artisan app:check-weather-users
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Nota:** Este comando es necesario, pues los datos del clima se extraen de forma automática a través de colas (jobs Laravel) cada 30 minutos con Laravel Task Scheduling, para mejorar el rendimiento de cada petición al servidor, evitando llamadas innecesarias a la API de WeatherApi. Se debe ejecutar la primera vez para tener los datos preparados, en vez de esperar 30 minutos.
 
-### Premium Partners
+- En el navegador dirigirse a: http://localhost:8000
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Despliegue local Windows
 
-## Contributing
+Requiere dependencia de Redis en Docker o WSL. Esta opción puede mostrar la aplicación de una forma más óptima, sin embargo, no se ejecutarán las colas de forma automática a través de Laravel Task Scheduling y tampoco podrá usar Laravel Horizon.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo env.docker, ya tiene las configuraciones necesarias.
+```
+https://github.com/Edcodigo01/weather.git
+cd weather
+cp .env.local .env
+```
 
-## Code of Conduct
+- Instalar dependencias Laravel
+```
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Instalar dependencias para el frontend
+```
+npm install
+```
 
-## Security Vulnerabilities
+- Crear una base de datos SQL, en Docker o local como PostgreSQL o MySQL. El archivo .env tiene predefinidos los siguientes datos:
+```
+DB_CONNECTION=pgsql
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=weather
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Instalar Redis, para instalar en Docker usar:
+```
+docker run --name redis -d -p 6379:6379 redis
+```
 
-## License
+- Ejecutar migraciones y seeds
+```
+php artisan migrate --seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Se ejecuta el comando para traer los datos del clima.
+```
+php artisan app:check-weather-users
+```
+
+**Nota:** Este comando es necesario, pues los datos del clima se extraen a través de colas (jobs Laravel) que se deberían ejecutar de forma automática a través de Laravel Task Scheduling. De forma local no es posible, pero si desea probar la opción automática, aplique el despliegue total en Docker descrito en la sección anterior.
+
+- Ejecutar el siguiente comando para desplegar la aplicación
+```
+npm run laravel-vue
+```
+
+**Nota:** El comando **npm run laravel-vue** es equivalente a: `concurrently "vite" "php artisan serve" "php artisan queue:work"`
+
+- En el navegador dirigirse a: http://localhost:8000
+
+## Metodologías aplicadas
+
+Para esta aplicación se requieren peticiones optimizadas. Estas deberán traer datos del clima reales, debido a esto se recurrió al uso de una combinación de métodos.
+
+- Laravel Task Scheduling  
+  En vez de hacer una llamada a la API externa WeatherApi, en cada solicitud de lista de usuarios o un usuario en particular, se aplica el uso de tareas programadas, que actualizarán los datos cada 30 minutos, para verificar cambios en la API externa y almacenarlos en bases de datos para cada usuario. De este modo, cada consulta desde el frontend de la aplicación al backend será mucho más eficiente, dependiendo solo de los datos locales.
+
+- Colas (Jobs) Laravel  
+  Para procesar los datos de una forma más eficiente, se utilizan jobs de Laravel. A través de scheduling se llama la ejecución de jobs para cada usuario. Estos jobs ejecutarán su función en colas y en segundo plano, permitiendo un procesamiento de estas tareas de una forma más óptima. A través de estos trabajos es que se consultará el clima para cada usuario. En caso de algún error externo, están configurados para realizar intentos.
+
+- Base de datos en memoria Redis  
+  Para optimizar un poco más las consultas locales, se recurre al uso de cache Redis. Con esto podemos almacenar datos que suelen ser usados con mucha frecuencia sin cambios previos. En este caso, para listar los usuarios, la primera vez que se acceda a la lista, extraerá los datos desde la base de datos PostgreSQL. Para la siguiente vez que intente acceder, estos datos ya se habrán guardado en cache en la petición anterior, y en esta oportunidad, los datos, en vez de ser traídos desde la base de datos, se obtendrán directamente desde cache, lo que es mucho más rápido y elimina carga de trabajo para la base de datos. Por supuesto, los registros de la base de datos serán actualizados en cualquier momento. En este caso, con cada job, es acá donde se eliminarán los datos antiguos desde la cache, para que al hacer otra petición al listado de usuarios, estos extraigan los nuevos datos insertados en la base de datos y actualicen los de la cache.
+
+## Consideraciones
+
+Es posible aplicar más métodos para optimizar esta aplicación.
+
+Se podrían utilizar APIs de respaldo, es decir, si falla la API usada, hacer una consulta a una segunda, y así evitar dependencia de una única API.
+
+En caso de tener un número de usuarios mucho mayor, se podría configurar Laravel para que actualice los datos solo de los usuarios que tienen mayor frecuencia en la aplicación, verificando la última vez que inició sesión, o si está activo en ese momento, evitando de esta forma grandes consultas a la API externa y trabajo para la base de datos.
+
+En cuanto a la base de datos, en este caso se aplican relaciones, pero para grandes volúmenes de usuarios se puede aplicar la desnormalización de base de datos, que consiste en crear tablas que obtengan todos los datos requeridos para una solicitud, en este caso sería una tabla única para almacenar los datos de los usuarios, a la vez que almacena los datos del clima que ofrece la API externa.
+
+Para mejorar la interacción con los usuarios de la aplicación, se podrían aplicar websockets, para comunicar al frontend cuando los datos sean actualizados en base de datos y se haga la actualización de estos.
