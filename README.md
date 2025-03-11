@@ -28,8 +28,7 @@ docker-compose up -d
 ```
 - instalar dependencias
 ```
-
-docker-compose exec app php artisan migrate --seed
+docker-compose exec app composer isntall
 ```
 - Agregar Laravel Horizon
 ```
