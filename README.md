@@ -19,7 +19,7 @@ Permite usar Laravel Horizon y actualizaciones automáticas.
 ```
 git clone https://github.com/Edcodigo01/weather.git
 cd weather
-cp ..env.example.docker .env
+cp .env.example.docker .env
 ```
  
 - Levantar contenedores
@@ -55,7 +55,7 @@ Requiere dependencia de Redis en Docker o WSL. Esta opción puede mostrar la apl
 ```
 git clone https://github.com/Edcodigo01/weather.git
 cd weather
-cp ..env.example.local .env
+cp .env.example.local .env
 ```
 
 - Instalar dependencias Laravel
