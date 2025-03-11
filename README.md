@@ -26,22 +26,14 @@ cp .env.example.docker .env
 ```
 docker-compose up -d
 ```
-
-- Agregar Laravel Horizon
-```
-docker-compose exec app composer require laravel/horizon
-```
-- Instalar Laravel Horizon
-```
-docker-compose exec app php artisan horizon:install
-```
-- Iniciar Laravel Horizon
-```
-docker-compose exec app php artisan horizon
-```
 - Aplicar migración y seeders
 ```
 docker-compose exec app php artisan migrate --seed
+```
+- Agregar Laravel Horizon
+```
+docker-compose exec app composer require laravel/horizon
+docker-compose exec app php artisan horizon:install
 ```
 
 - Se ejecuta este comando para traer los primeros datos del clima (solo 1 vez)
