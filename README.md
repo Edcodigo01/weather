@@ -15,11 +15,11 @@ Aplicación que muestra una lista de usuarios junto con el clima actual basado e
 
 Permite usar Laravel Horizon y actualizaciones automáticas.
 
-- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo env.docker.
+- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo .env.example.docker.
 ```
 git clone https://github.com/Edcodigo01/weather.git
 cd weather
-cp .env.docker .env
+cp ..env.example.docker .env
 ```
  
 - Levantar contenedores
@@ -52,11 +52,11 @@ php artisan app:check-weather-users
 
 Requiere dependencia de Redis en Docker o WSL. Esta opción puede mostrar la aplicación de una forma más óptima, sin embargo, no se ejecutarán las colas de forma automática a través de Laravel Task Scheduling y tampoco podrá usar Laravel Horizon.
 
-- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo env.docker, ya tiene las configuraciones necesarias.
+- Clonar el repositorio, ingresar al directorio descargado y crear .env a partir del archivo .env.example.docker, ya tiene las configuraciones necesarias.
 ```
 git clone https://github.com/Edcodigo01/weather.git
 cd weather
-cp .env.local .env
+cp ..env.example.local .env
 ```
 
 - Instalar dependencias Laravel
